@@ -1,3 +1,3 @@
 <?php
 
-echo 'listngs';
+require loadView('listings/index');

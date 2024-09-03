@@ -1,3 +1,3 @@
 <?php
 
-echo 'create listing page ';
+require loadView('listings/create');

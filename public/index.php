@@ -8,6 +8,7 @@ require '../helpers.php';
 
 // a router can be a switch statment or an object
 // assoss  array and mappded to a controller file
+// any time we go to a route that doesnot exitst we go to the 404
 $routes = [
     '/' => 'controllers/home.php',
     '/listings' => 'controllers/listings/index.php',
@@ -27,6 +28,8 @@ if (array_key_exists($uri, $routes)) {
     // if it is there then require this file which will losd that page 
     require basePath($routes[$uri]);
 } else {
+    // if the key does not exist route to the 404 controllers/error/404.php' which will then route to the view
+    
     require basePath($routes['404']);
 }
 
