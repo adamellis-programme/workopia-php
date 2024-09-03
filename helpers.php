@@ -51,6 +51,7 @@ function loadView($name)
  * @return void
  */
 
+//  ASK CHAT WHY WE USE REQUIRE OVER RETURN IN THE HELPERS 
 // the difference between using returr and require 
 // is if the return is called here then the require has
 // to be called on the page
