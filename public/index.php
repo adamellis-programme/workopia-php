@@ -1,5 +1,6 @@
-<?php
 
+<?php
+// This is where everything starts 
 // we include this here so we do not have to call it again in other files
 
 // require basePath('views/home.view.php');
@@ -12,12 +13,29 @@ require '../helpers.php';
 
 
 
+
+
+require basePath('Router.php');
+// as Router file is now called we can instantiate a new Roter here in index.php
+// instantiate a new router 
+// call the router 
+
+$router = new Router();
+$routes = require basePath('routes.php');
+
+
+
 // get uri using server super global
+// GET THE URI AND METHOD THAT IS BEING REQUESTED 
 $uri = $_SERVER['REQUEST_URI'];
-// inspectAndDie($uri);
+$method = $_SERVER['REQUEST_METHOD'];
+// inspect($uri);
+// inspect($method);
+
+// pass in method of what ever page we are visiting 
+$router->route($uri, $method);
 
 
-require basePath('router.php');
 
 
-// inspectAndDie($uri);
+// inspectAndDie($uri); 
