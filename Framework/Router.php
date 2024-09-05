@@ -142,7 +142,7 @@ class Router
             // uri and method come throm the super global
             if ($route['uri'] === $uri && $route['method'] === $method) {
                 // if true load the controller for that particular route 
-                require basePath($route['controller']);
+                require basePath('App/'. $route['controller']);
                 return;
                 // by passing in the $route['key'] 
                 // and key we choose the VALUE!

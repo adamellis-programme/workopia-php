@@ -32,7 +32,7 @@ function basePath($path = '')
 // variable interpolation  {}
 function loadView($name, $data = [])
 {
-    $viewPath = basePath("views/{$name}.view.php");
+    $viewPath = basePath("App/views/{$name}.view.php");
     // var_dump($viewPath);
 
     // inspect($viewPath); 
@@ -63,7 +63,7 @@ function loadView($name, $data = [])
 // to be called on the page
 function loadPartial($name)
 {
-    $partialPath = basePath("views/partials/{$name}.php");
+    $partialPath = basePath("App/views/partials/{$name}.php");
 
     // Make sure path exists
     if (file_exists($partialPath)) {
