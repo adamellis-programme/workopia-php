@@ -5,6 +5,15 @@
 
 // require basePath('views/home.view.php');
 require '../helpers.php';
+
+// 
+require basePath('Database.php');
+$config = require basePath('config/db.php');
+// $config returns an array and then gets plugged into all the paramaters it needs to go
+
+// INSTATIATED THE DATABASE 
+$db = new Database($config);
+
 // require loadView('home');
 
 // a router can be a switch statment or an object
