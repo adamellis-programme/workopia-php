@@ -7,6 +7,11 @@ $db = new Database($config);
 
 // call the query method on the db adn pass in the query
 $listings = $db->query('SELECT * FROM listings LIMIT 6')->fetchAll();
+// inspect($listings);
 
-inspect($listings);
-require loadView('home');
+$hello = 'hey';
+
+require loadView('home', [
+    'listings' => $listings,
+    'test' => $hello,
+]);

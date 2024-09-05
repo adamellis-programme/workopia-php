@@ -26,8 +26,11 @@ function basePath($path = '')
  * @return void
  */
 
+
+//  .If extract() is called inside a function, it adds variables to the local symbol table of that function.§§
+//  If extract() is called in a script that includes or requires a view, it adds variables to the symbol table of the scope where the view will be loaded, making those variables available in the view.
 // variable interpolation  {}
-function loadView($name)
+function loadView($name, $data = [])
 {
     $viewPath = basePath("views/{$name}.view.php");
     // var_dump($viewPath);
@@ -36,6 +39,9 @@ function loadView($name)
 
     // Make sure path exists
     if (file_exists($viewPath)) {
+        $test1 = 'hello';
+
+        extract($data);
         return $viewPath;
     } else {
         echo "View '{$name}' not found.";
@@ -99,4 +105,18 @@ function inspectAndDie($value)
     die(var_dump($value));
     echo '</pre>';
     // or just use die() here 
+}
+
+
+
+/**
+ * Format Salary
+ *
+ * @param string $salary
+ * @return string $formattedSalary
+ */
+function formatSalary($salary)
+{
+    // floatval
+    return '$' . number_format(floatval($salary));
 }

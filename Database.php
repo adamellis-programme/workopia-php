@@ -25,7 +25,8 @@ class Database
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             // fetch ass array and do not want the indexes
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            // PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
         ];
 
         try {
@@ -58,6 +59,7 @@ class Database
             // sth = statment & conn is the PDO INSTANCE
             $sth = $this->conn->prepare($query);
             $sth->execute();
+            // return $sth->fetchAll();
             return $sth;
         } catch (PDOException $e) {
             throw new Exception("Query execution failed: " . $e->getMessage());

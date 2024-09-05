@@ -136,6 +136,7 @@ class Router
     public function route($uri, $method)
     {
         foreach ($this->routes as $route) {
+            // inspect($route);
             // if the uri in the routes matches the uri we are accessing through the browser
             // $route['WHATEVER'] = current iteration 
             // uri and method come throm the super global
@@ -149,7 +150,8 @@ class Router
 
             // if we try and load a route that is not in the array 
 
-            $this->error(403);
         }
+
+        $this->error();
     }
 }
