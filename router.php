@@ -22,7 +22,14 @@ class Router
 
 {
     protected $routes = [];
-    // this is a method 
+    /**
+     * Add a new Route
+     * this is a method 
+     * @param String  $method
+     * @param String  $uri
+     * @param String  $controller
+     * @return void
+     */
     public function registerRoute($method, $uri, $controller)
     {
         // assos arr method
@@ -75,6 +82,7 @@ class Router
      */
     public function post($uri, $controller)
     {
+
         $this->registerRoute('POST', $uri, $controller);
     }
 

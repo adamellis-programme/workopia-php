@@ -1,50 +1,20 @@
 
 <?php
-// This is where everything starts 
-// we include this here so we do not have to call it again in other files
 
-// require basePath('views/home.view.php');
 require '../helpers.php';
-
-// 
 require basePath('Database.php');
-$config = require basePath('config/db.php');
-// $config returns an array and then gets plugged into all the paramaters it needs to go
-
-// INSTATIATED THE DATABASE 
-$db = new Database($config);
-
-// require loadView('home');
-
-// a router can be a switch statment or an object
-// assoss  array and mappded to a controller file
-// any time we go to a route that doesnot exitst we go to the 404
-
-
-
-
-
 require basePath('Router.php');
-// as Router file is now called we can instantiate a new Roter here in index.php
-// instantiate a new router 
-// call the router 
 
+// Instantiate the router
 $router = new Router();
+
+// Get Routes
 $routes = require basePath('routes.php');
 
-
-
-// get uri using server super global
-// GET THE URI AND METHOD THAT IS BEING REQUESTED 
+// Get cuttent URI adn HTTP method
 $uri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
-// inspect($uri);
-// inspect($method);
 
-// pass in method of what ever page we are visiting 
+
+// Route the request
 $router->route($uri, $method);
-
-
-
-
-// inspectAndDie($uri); 
