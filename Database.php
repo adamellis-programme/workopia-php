@@ -53,11 +53,17 @@ class Database
      */
 
 
-    public function query($query)
+    public function query($query, $params = [])
     {
         try {
             // sth = statment & conn is the PDO INSTANCE
             $sth = $this->conn->prepare($query);
+            // bind named params added in 
+            foreach ($params as $param => $value) {
+                inspect($param, );
+                // we bind :id to $id
+                $sth->bindValue(':' . $param, $value);
+            }
             $sth->execute();
             // return $sth->fetchAll();
             return $sth;
@@ -66,3 +72,17 @@ class Database
         }
     }
 }
+
+/**
+ * Why use a loop?
+ * 1 Multiple Parameters: If your SQL query has 
+ *  more than one parameter (like :id and :status),
+ *  you need to bind each one to its corresponding value.
+ *  The loop allows you to bind all parameters dynamically, without hardcoding each one.
+ *
+ * 2 Consistency: Whether you have one parameter (id) or many, the loop will handle them consistently, making the query() method more flexible.
+ * 
+ * 
+ * 
+ * 
+ */
