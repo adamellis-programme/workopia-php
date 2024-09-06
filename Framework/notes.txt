@@ -1,0 +1,7 @@
+any classes in our framework folder 
+we do not have to require
+
+we can also use a sub directory in framework 
+    PSR-4 allows us to use sub folders in with name spaces
+
+    

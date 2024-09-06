@@ -1,4 +1,6 @@
 <?php
+
+namespace Framework;
 // $routes = require basePath('routes.php');
 // // the keys are the uri
 // // look for the uri in the routes file
@@ -142,7 +144,7 @@ class Router
             // uri and method come throm the super global
             if ($route['uri'] === $uri && $route['method'] === $method) {
                 // if true load the controller for that particular route 
-                require basePath('App/'. $route['controller']);
+                require basePath('App/' . $route['controller']);
                 return;
                 // by passing in the $route['key'] 
                 // and key we choose the VALUE!

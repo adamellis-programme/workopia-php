@@ -1,0 +1,15 @@
+{
+  "name": "adamellis-programme/workopia-php",
+  "description": "job listing site",
+  "authors": [
+    {
+      "name": "adam ellis"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "Framework/",
+      "App\\": "App/"
+    }
+  }
+}

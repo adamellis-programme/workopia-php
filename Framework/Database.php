@@ -1,5 +1,24 @@
 <?php
 
+namespace Framework;
+
+// this makes the file NOT look in the framework namespace 
+// In this case, PHP will look for Framework\Exception, not \Exception, even though Exception is a built-in class in PHP's global namespace. If Framework\Exception does not exist, you'll get an error.
+// To tell PHP that you're referring to the built-in Exception class, which resides in the global namespace, you add a backslash: throw new \Exception("Something went wrong.");
+// Without the backslash: PHP searches for the class Exception in the current namespace (Framework\Exception).
+// With the backslash: PHP knows to search for Exception in the global namespace (\Exception), which is where core PHP classes like Exception, PDO, and PDOException are defined.
+/**
+ * You need to use the backslash when:
+ *
+ *      You're inside a custom namespace (e.g., namespace Framework;), and
+ *      You're referencing a class or function from the global namespace, such as PHP's built-in classes (e.g., Exception, PDO, PDOException, etc.).
+ */
+
+use PDO;
+// Adding a backslash (\) before a class name like \Exception in PHP ensures that the class is referenced from the global namespace rather than the current namespace in use.
+
+
+
 class Database
 {
     public $conn;
@@ -29,13 +48,20 @@ class Database
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
         ];
 
+
+        /**
+         * PDO looks in the namespace FRAMEWORK NAMESPACE 
+         * either place the /PDO slash before the PDO
+         * OR use USE PDO
+         */
+
         try {
             // $this->conn: The PDO object is stored in the $conn property of the Database class, making it accessible for further interactions with the database (e.g., running queries).
-            $this->conn = new PDO($dsn, $config['username'], $config['password'], $options);
+            $this->conn = new \PDO($dsn, $config['username'], $config['password'], $options);
             echo 'CONNECTED';
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // throw new Exception("Database connection failed! {$e->getMessage()}", 1);
-            throw new Exception("Database connection failed...: " . $e->getMessage());
+            throw new \Exception("Database connection failed...: " . $e->getMessage());
         }
     }
 
@@ -60,15 +86,15 @@ class Database
             $sth = $this->conn->prepare($query);
             // bind named params added in 
             foreach ($params as $param => $value) {
-                inspect($param, );
+                inspect($param,);
                 // we bind :id to $id
                 $sth->bindValue(':' . $param, $value);
             }
             $sth->execute();
             // return $sth->fetchAll();
             return $sth;
-        } catch (PDOException $e) {
-            throw new Exception("Query execution failed: " . $e->getMessage());
+        } catch (\PDOException $e) {
+            throw new \Exception("Query execution failed: " . $e->getMessage());
         }
     }
 }
