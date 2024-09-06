@@ -5,3 +5,26 @@ we can also use a sub directory in framework
     PSR-4 allows us to use sub folders in with name spaces
 
     
+
+    1: first go to the file such as Router.php 
+        and add the namespace Framework;
+    2: now when we use this router we need to specify 
+       we need to specify that namespace 
+    3: then go to the file where we are useing ther Router 
+       and type use Framework/Router 
+    
+    
+    -: in Class declare namespace buy using namespace Framework
+    -: then in every file that needs access
+       type Framework\Database 
+       type Framework\Router 
+       etc
+
+    -: this tells the file to use the Class Router in 
+       the Framework folder
+       
+            
+
+
+
+

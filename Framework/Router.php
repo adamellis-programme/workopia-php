@@ -1,4 +1,5 @@
 <?php
+// this is called framework as it is  not specific to any rescurce it can be users / listing etc
 
 namespace Framework;
 // $routes = require basePath('routes.php');
@@ -29,17 +30,20 @@ class Router
      * this is a method 
      * @param String  $method
      * @param String  $uri
-     * @param String  $controller
+     * @param String  $action
      * @return void
      */
-    public function registerRoute($method, $uri, $controller)
+    public function registerRoute($method, $uri, $action)
     {
         // assos arr method
         // NOTE THE BRACKETS [] = ADDING TO THE ARRAY AND NOT SETTING THE ARRAY 
+        list($controller, $controllerMethod) = explode('@', $action);
+        // inspectAndDie($controllerMethod);
         $this->routes[] = [
             'method' => $method,
             'uri' => $uri,
-            'controller' => $controller
+            'controller' => $controller,
+            'controllerMethod' => $controllerMethod,
         ];
     }
 
@@ -143,8 +147,18 @@ class Router
             // $route['WHATEVER'] = current iteration 
             // uri and method come throm the super global
             if ($route['uri'] === $uri && $route['method'] === $method) {
+                // require basePath('App/' . $route['controller']);
                 // if true load the controller for that particular route 
-                require basePath('App/' . $route['controller']);
+                //  ----
+                // extract controller and controller method
+
+                $controller = 'App\\Controllers\\' . $route['controller'];
+                $controllerMethod = $route['controllerMethod'];
+
+                // contrroller is a class, her we instantiate and call the method 
+                // this controller can be users/ listing / anything etc
+                $controllerInstance = new $controller();
+                $controllerInstance->$controllerMethod(); // method called in controller
                 return;
                 // by passing in the $route['key'] 
                 // and key we choose the VALUE!
