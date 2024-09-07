@@ -79,6 +79,7 @@ class Router
      */
     public function get($uri, $controller)
     {
+        // inspect($uri);
         $this->registerRoute('GET', $uri, $controller);
     }
 
@@ -132,35 +133,54 @@ class Router
     // URI AND METHOD is what comes from index $_gloobals
     // here we need to loop thorugh all the routes, listings, create, etc
     // to see if it is matching the uri that is being called 
-    public function route($uri, $method)
+    public function route($uri)
     {
+        // URI comes from the public index.php
+        // inspect($uri);
+
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+
         foreach ($this->routes as $route) {
+            // inspect(explode('/', trim($route['uri'], '/')));
+            // inspect(explode('/', $route['uri']));
             // inspect($route);
-            // if the uri in the routes matches the uri we are accessing through the browser
-            // $route['WHATEVER'] = current iteration 
-            // uri and method come throm the super global
-            if ($route['uri'] === $uri && $route['method'] === $method) {
-                // require basePath('App/' . $route['controller']);
-                // if true load the controller for that particular route 
-                //  ----
-                // extract controller and controller method
+            // Split the URI into segments
+            
+            $uriSegments = explode('/', trim($uri, '/'));
+            inspect($uriSegments);
+            // Split the route URI into segments
+            $routeSegments = explode('/', trim($route['uri'], '/'));
+            // inspect($route['uri']);
 
-                $controller = 'App\\Controllers\\' . $route['controller'];
-                $controllerMethod = $route['controllerMethod'];
+            // Check if the number of segments matches
+            if (count($uriSegments) === count($routeSegments) && strtoupper($route['method']) === $requestMethod) {
+                $params = [];
 
-                // contrroller is a class, her we instantiate and call the method 
-                // this controller can be users/ listing / anything etc
-                $controllerInstance = new $controller();
-                // inspectAndDie($controllerInstance);
+                // Compare each segment
+                $match = true;
 
-                $controllerInstance->$controllerMethod(); // method called in controller
-                return;
-                // by passing in the $route['key'] 
-                // and key we choose the VALUE!
+                for ($i = 0; $i < count($uriSegments); $i++) {
+                    if ($routeSegments[$i] !== $uriSegments[$i] && !preg_match('/\{(.+?)\}/', $routeSegments[$i])) {
+                        $match = false;
+                        break;
+                    }
+                    if (preg_match('/\{(.+?)\}/', $routeSegments[$i], $matches)) {
+                        // This segment is a parameter, so store it
+                        $params[$matches[1]] = $uriSegments[$i];
+                    }
+                }
+
+                if ($match) {
+                    // Extract controller and method from route
+                    $controller = 'App\\Controllers\\' . $route['controller'];
+                    $controllerMethod = $route['controllerMethod'];
+
+                    // Instantiate the controller and call the method, passing parameters
+                    $controllerInstance = new $controller();
+                    $controllerInstance->$controllerMethod($params);
+                    return;
+                }
             }
-
-            // if we try and load a route that is not in the array 
-
         }
 
         // error controller is in  the APP namespace 

@@ -86,7 +86,7 @@ class Database
             $sth = $this->conn->prepare($query);
             // bind named params added in 
             foreach ($params as $param => $value) {
-                inspect($param,);
+                // inspect($param,);
                 // we bind :id to $id
                 $sth->bindValue(':' . $param, $value);
             }
