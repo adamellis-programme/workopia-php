@@ -147,7 +147,7 @@ class Router
             // Split the URI into segments
             
             $uriSegments = explode('/', trim($uri, '/'));
-            inspect($uriSegments);
+            // inspect($uriSegments);
             // Split the route URI into segments
             $routeSegments = explode('/', trim($route['uri'], '/'));
             // inspect($route['uri']);

@@ -25,7 +25,7 @@ class ListingController
     {
         $listings = $this->db->query('SELECT * FROM listings')->fetchAll();
 
-        require loadView('listings/index', [
+        loadView('listings/index', [
             'listings' => $listings
         ]);
     }
