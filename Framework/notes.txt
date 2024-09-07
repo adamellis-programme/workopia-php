@@ -16,8 +16,8 @@ we can also use a sub directory in framework
     
     -: in Class declare namespace buy using namespace Framework
     -: then in every file that needs access
-       type Framework\Database 
-       type Framework\Router 
+       type use Framework\Database 
+       type use Framework\Router 
        etc
 
     -: this tells the file to use the Class Router in 

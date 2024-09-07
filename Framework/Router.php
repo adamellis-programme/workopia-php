@@ -2,6 +2,9 @@
 // this is called framework as it is  not specific to any rescurce it can be users / listing etc
 
 namespace Framework;
+
+use App\Controllers\ErrorController;
+
 // $routes = require basePath('routes.php');
 // // the keys are the uri
 // // look for the uri in the routes file
@@ -116,17 +119,7 @@ class Router
         $this->registerRoute('DELETE', $uri, $controller);
     }
 
-    /**
-     * Load error page
-     * @param int $httpCode
-     * @return void
-     */
-    public function error($httpCode = 404)
-    {
-        http_response_code($httpCode);
-        require loadView("error/{$httpCode}");
-        exit;
-    }
+
 
     /**
      * Route the request
@@ -158,6 +151,8 @@ class Router
                 // contrroller is a class, her we instantiate and call the method 
                 // this controller can be users/ listing / anything etc
                 $controllerInstance = new $controller();
+                // inspectAndDie($controllerInstance);
+
                 $controllerInstance->$controllerMethod(); // method called in controller
                 return;
                 // by passing in the $route['key'] 
@@ -168,6 +163,9 @@ class Router
 
         }
 
-        $this->error();
+        // error controller is in  the APP namespace 
+        // $this->error == was this but we do not have 
+        // to instantiate as we USED STATIC METHODS
+        ErrorController::notFound(); // IN APP NAME SPACE
     }
 }

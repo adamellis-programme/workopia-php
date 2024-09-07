@@ -32,6 +32,7 @@ function basePath($path = '')
 // variable interpolation  {}
 function loadView($name, $data = [])
 {
+
     $viewPath = basePath("App/views/{$name}.view.php");
     // var_dump($viewPath);
 
@@ -42,7 +43,8 @@ function loadView($name, $data = [])
         $test1 = 'hello';
 
         extract($data);
-        return $viewPath;
+        require  $viewPath;
+        // require  $viewPath;
     } else {
         echo "View '{$name}' not found.";
     }

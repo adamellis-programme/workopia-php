@@ -8,7 +8,15 @@
 // ];
 
 
+// 1:- set up listing class
+// 2:- set listing route below 
+// 1:- 
+
+
 $router->get('/', 'HomeController@index');
+$router->get('/listings', 'ListingController@index');
+$router->get('/listings/create', 'ListingController@create');
+$router->get('/listing', 'ListingController@show');
 // because of classes we can specify a method 
 // $router->get('/', 'controllers/home.php');
 // $router->get('/listings', 'controllers/listings/index.php');
