@@ -96,7 +96,7 @@ class ListingController
 
 
         // Validate required fields
-        $requiredFields = ['title', 'description', 'email', 'city', 'state'];
+        $requiredFields = ['title', 'description',  'salary', 'email', 'city', 'state'];
 
         // to be displayed in the ui
         // uc first is first letter uppercase
@@ -119,9 +119,35 @@ class ListingController
             exit;
         } else {
             echo 'Success';
-            // All required fields are present and validated
-            // Insert data into the database, including non-required fields
-            // ...
+            $fields = [];
+
+            foreach ($newListingData as $field => $value) {
+                $fields[] = $field;
+            }
+
+            $fields = implode(', ', $fields);
+
+            // values
+            $values = [];
+
+            foreach ($newListingData as $field => $value) {
+                // Convert empty strings to null
+                // inspect($newListingData[$field]);
+                if ($value === '') {
+                    // set the value to null
+                    $newListingData[$field] = null;
+                }
+                // place holders have the :name
+                $values[] = ':' . $field;
+            }
+
+            $values = implode(', ', $values);
+
+            $query = "INSERT INTO listings ({$fields}) VALUES ({$values})";
+
+            $this->db->query($query, $newListingData);
+            inspect($values);
+            redirect('/listings');
         }
     }
 }
