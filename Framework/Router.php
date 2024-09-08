@@ -210,7 +210,7 @@ class Router
                     // this line is basicly App/Controllers/listingController
                     // \ escapes the string
                     $controller = 'App\\Controllers\\' . $route['controller'];
-                    inspect($route['controller']);
+                    // inspect($route['controller']);
                     // inspect($controller);
 
                     // this gets us the METHOD this is on the CONTROLLER CLASS FILE

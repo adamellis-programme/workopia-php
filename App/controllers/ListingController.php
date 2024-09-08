@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use Framework\Database;
+use Framework\Validation;
 
 // we do not have to reqire this Class anywhere as it is 
 // being autoloaded into any file that needs it 
@@ -23,6 +24,8 @@ class ListingController
    */
     public function index()
     {
+        // scope resalution operator
+        // inspectAndDie(Validation::match('hello',  'hello'));
         $listings = $this->db->query('SELECT * FROM listings')->fetchAll();
 
         loadView('listings/index', [
