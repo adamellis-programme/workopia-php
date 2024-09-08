@@ -37,6 +37,7 @@ class ListingController
     public function show($params)
     {
 
+        // inspect($params);
         // $id = $_GET['id'] ?? '';
         $id = $params['id'] ?? '';
         // inspect($id);
@@ -51,6 +52,14 @@ class ListingController
         // check if listing exists
 
         if (!$listing) {
+            // -: Because it's a static method, you 
+            // -: can call it directly on the class 
+            // -: itself without creating an instance of 
+            // -: the ErrorController class. In other words, 
+            // -: the method belongs to the class, not to a 
+            // -: specific object of that class.
+            // -: :: This is the scope resolution operator, 
+            // -: This is a common practice for utility methods or methods that don't require an object state to function, such as error handling in this case.
             ErrorController::notFound('Listing not found');
             return;
         }

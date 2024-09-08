@@ -139,17 +139,15 @@ class Router
         // inspect($uri);
 
         $requestMethod = $_SERVER['REQUEST_METHOD'];
-
+        // Split the URI into segments
+        $uriSegments = explode('/', trim($uri, '/'));
+        // inspect(count($uriSegments));
+        // inspect($uriSegments);
         foreach ($this->routes as $route) {
-            // inspect(explode('/', trim($route['uri'], '/')));
-            // inspect(explode('/', $route['uri']));
-            // inspect($route);
-            // Split the URI into segments
-            
-            $uriSegments = explode('/', trim($uri, '/'));
-            // inspect($uriSegments);
-            // Split the route URI into segments
+
+            // Split the ROUTE  into segments
             $routeSegments = explode('/', trim($route['uri'], '/'));
+            // inspect(count($routeSegments));
             // inspect($route['uri']);
 
             // Check if the number of segments matches
@@ -160,28 +158,94 @@ class Router
                 $match = true;
 
                 for ($i = 0; $i < count($uriSegments); $i++) {
+                    // THIS IS JUST A WAY TO CHECK AND BREAK
+                    // if not true to the current i variable
+                    // If the segments don't match (and it's not a parameter), it means the URI doesn't match the route and the function can stop checking this route.
                     if ($routeSegments[$i] !== $uriSegments[$i] && !preg_match('/\{(.+?)\}/', $routeSegments[$i])) {
+                        // echo $routeSegments[$i];
+                        // inspect($uriSegments[$i]);
+                        // inspect($routeSegments[$i]);
                         $match = false;
                         break;
+                        // does break throw an error
+
                     }
+
+                    /**
+                     * 
+                     */
+
+                    // inspect($routeSegments);
+                    // $routeSegments[$i] returns lisitn and {id} / create
+                    // routeSegments are the "/listings/create"  LAST SEGMENTS OF THE 
+                    // EXPLODED STRING
                     if (preg_match('/\{(.+?)\}/', $routeSegments[$i], $matches)) {
                         // This segment is a parameter, so store it
+                        // **** MATCHES COULD BE NAME => 'SARAH'
+                        // **** WE THEN SET THE KEYS AND VALUES TO BE PASSED TO THE CONTROLLER
+
+                        // MANY PARAMS WILL LOOP AND PUSH KEY VALUE PAIRS ONTO THE PARAMS ARRAY 
+
+                        // KEY matches[1]-----> VALUE  uriSegments
                         $params[$matches[1]] = $uriSegments[$i];
+                        // inspect($matches[1]);
+                        // inspect($matches); // listing example: array with {id} and id 
+                        // inspect($uriSegments[1]);
+                        // inspect($params);
                     }
                 }
 
+                /**
+                 * 
+                 * 
+                 */
+
                 if ($match) {
                     // Extract controller and method from route
-                    $controller = 'App\\Controllers\\' . $route['controller'];
-                    $controllerMethod = $route['controllerMethod'];
+                    // inspect($route);
+                    // controller gets the file name whic h has the correct controller class in it 
 
-                    // Instantiate the controller and call the method, passing parameters
+                    // this line is basicly App/Controllers/listingController
+                    // this line is basicly App/Controllers/listingController
+                    // this line is basicly App/Controllers/listingController
+                    // \ escapes the string
+                    $controller = 'App\\Controllers\\' . $route['controller'];
+                    inspect($route['controller']);
+                    // inspect($controller);
+
+                    // this gets us the METHOD this is on the CONTROLLER CLASS FILE
+                    $controllerMethod = $route['controllerMethod'];
+                    // inspect($controllerMethod);
+
+                    // Instantiate the controller and 
                     $controllerInstance = new $controller();
+
+
+                    /**
+                     * grabs the "App\Controllers\ListingController" file 
+                     * calls the 'show' method in that file
+                     * passes the params to that file 
+                     * 
+                     * say we are calling the lising controller which has one CLASS in it
+                     * we call that instance and call a method 
+                     * the method in the lisings case maybe 'show'
+                     * we have now called 'show'
+                     * we pass $params into 'show' 
+                     * which is a mehod in the controller class
+                     * $parms is in this case id => "16"
+                     */
+
+                    // call the method, passing parameters
+                    // inspect($params);
+                    // PARAMS IS AN ARRAY THAT CAN HAVE AS MANY PARAMS AS WE NEED 
+                    // SUCH AS NAME=, AGE=, ID= ETC
                     $controllerInstance->$controllerMethod($params);
+                    // inspect($controllerInstance);
                     return;
                 }
             }
         }
+
 
         // error controller is in  the APP namespace 
         // $this->error == was this but we do not have 

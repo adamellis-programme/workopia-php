@@ -1,0 +1,39 @@
+Yes, with your PSR-4 autoloading configuration set up in composer.json like this:
+
+json
+Copy code
+"autoload": {
+  "psr-4": {
+    "Framework\\": "Framework/",
+    "App\\": "App/"
+  }
+}
+The ErrorController class from the App\Controllers namespace will be automatically loaded when needed.
+
+How PSR-4 Autoloading Works:
+Namespace to Directory Mapping:
+
+The App\\ namespace is mapped to the App/ directory. So, when the code refers to a class in the App\Controllers namespace, the autoloader will look for it in the corresponding App/Controllers directory.
+Similarly, Framework\\ is mapped to the Framework/ directory.
+Class Name to File Mapping:
+
+When you reference a class such as App\Controllers\ErrorController, the autoloader translates it into the path App/Controllers/ErrorController.php.
+No Manual require or include Needed:
+
+Since you have the PSR-4 autoloader configured in composer.json, you don't need to manually require or include files for classes. The autoloader automatically includes the file based on the namespace and the directory structure.
+Example:
+The line:
+
+php
+Copy code
+ErrorController::notFound('Listing not found');
+refers to the ErrorController class in the App\Controllers namespace. With the PSR-4 autoloader:
+
+Namespace: App\Controllers\ErrorController
+Mapped Directory: The autoloader knows to look in the App/Controllers/ErrorController.php file based on the mapping from App\\ to App/.
+How to Make Sure Autoloading Works:
+Run composer dump-autoload: This command regenerates the Composer autoload files. If you add new classes or update your composer.json, you'll need to run this to make sure the autoloader recognizes the new class mappings.
+
+Check Class Location: Ensure that the ErrorController.php file is located at App/Controllers/ErrorController.php. The filename and directory structure must match the namespace.
+
+Once this is set up, the autoloader will take care of loading the ErrorController class whenever it's referenced, like in the ListingController.
