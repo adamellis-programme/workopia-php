@@ -71,4 +71,28 @@ class ListingController
             'listing' => $listing,
         ]);
     }
+
+
+
+    // store the data / POST
+    // Store data in database 
+    // $_POST is how we get the data from the form
+    public function store()
+    {
+        $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'state', 'phone', 'email', 'requirements', 'benefits'];
+
+        // Filter the POST data to include only allowed fields
+        /**
+         * array_intersect_key: returns an new arr as long as the key is in both arrays
+         * array_flip as no keys in allow we need to use flip
+         */
+        $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
+        $newListingData['user_id'] = 1;
+
+        // Sanitize the data - 
+        // 1st call functin to run callback on 
+        // 2nd enter the array of data that the fucntion needs to do work on
+        $newListingData = array_map('sanitize', $newListingData);
+        inspectAndDie($newListingData);
+    }
 }
