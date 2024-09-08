@@ -93,6 +93,35 @@ class ListingController
         // 1st call functin to run callback on 
         // 2nd enter the array of data that the fucntion needs to do work on
         $newListingData = array_map('sanitize', $newListingData);
-        inspectAndDie($newListingData);
+
+
+        // Validate required fields
+        $requiredFields = ['title', 'description', 'email', 'city', 'state'];
+
+        // to be displayed in the ui
+        // uc first is first letter uppercase
+        $errors = [];
+        foreach ($requiredFields as $field) {
+            // inspect($newListingData[$field]);
+            // validation / string - has to be a least 1 char as default
+            if (empty($newListingData[$field]) || !Validation::string($newListingData[$field])) {
+                $errors[$field] = ucfirst($field) . ' is required';
+            }
+        }
+
+        // inspectAndDie($errors);
+        if (!empty($errors)) {
+            // Reload view with errors - go to view and make sure it can recieve errors
+            loadView('listings/create', [
+                'errors' => $errors,
+                'listing' => $newListingData,
+            ]);
+            exit;
+        } else {
+            echo 'Success';
+            // All required fields are present and validated
+            // Insert data into the database, including non-required fields
+            // ...
+        }
     }
 }
