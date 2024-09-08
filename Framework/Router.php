@@ -135,10 +135,18 @@ class Router
     // to see if it is matching the uri that is being called 
     public function route($uri)
     {
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+
+        // Check if the request is a POST and contains the _method parameter
+        if ($requestMethod === 'POST' && isset($_POST['_method'])) {
+            // Override the request method with the value of _method
+            // _POST IS THE ACTUAL DATA 
+            $requestMethod = strtoupper($_POST['_method']);
+            // inspect($requestMethod);
+        }
         // URI comes from the public index.php
         // inspect($uri);
 
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
         // Split the URI into segments
         $uriSegments = explode('/', trim($uri, '/'));
         // inspect(count($uriSegments));

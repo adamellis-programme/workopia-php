@@ -150,4 +150,42 @@ class ListingController
             redirect('/listings');
         }
     }
+
+
+    /**
+     * delete a listing 
+     * @param array $params
+     * @return void
+     */
+
+
+    public function destroy($params)
+    {
+        // check if there 
+        // params array as we are binding when passed to
+        // Database Query
+
+        $id = $params['id'];
+        // inspect($id);
+        $params = [
+            'id' => $id,
+        ];
+
+        // gets the single listing from the database
+        $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
+        // inspect($listing);
+
+        // Check if listing exists
+        // if no lising then throw an error
+        if (!$listing) {
+            ErrorController::notFound('Listing not found');
+            return;
+        }
+
+        // inspectAndDie($listing);
+
+        $this->db->query('DELETE FROM listings WHERE id = :id', $params);
+
+        redirect('/listings');
+    }
 }
