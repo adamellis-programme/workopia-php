@@ -186,6 +186,160 @@ class ListingController
 
         $this->db->query('DELETE FROM listings WHERE id = :id', $params);
 
+        // Set flash message 
+        $_SESSION['success_message'] = 'Listing deleted successfully';
+
         redirect('/listings');
+    }
+
+
+    /*
+   * Show the edit listing form
+   *
+   * @param array $params
+   * @return void
+   */
+    public function edit($params)
+    {
+        $id = $params['id'];
+
+        $params = [
+            'id' => $id,
+        ];
+
+        // fetch single listing 
+        $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
+
+        // Check if listing exists
+        if (!$listing) {
+            ErrorController::notFound('Listing not found');
+            return;
+        }
+
+        // use inspect to see data in screen
+        // inspectAndDie($listing);
+        // load view and pass that listing into it 
+        // listings/edit.view
+        // helper func:  $viewPath = basePath("App/views/{$name}.view.php");
+        loadView('listings/edit', [
+            'listing' => $listing,
+        ]);
+    }
+
+    /*
+   * Update a listing
+   *
+   * @param array $params
+   * @return void
+   */
+    /*
+   * Update a listing
+   *
+   * @param array $params
+   * @return void
+   * 
+   * mix of the snow and the store()
+   */
+    public function update($params)
+    {
+        $id = $params['id'];
+
+        $params = [
+            'id' => $id,
+        ];
+
+        $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
+
+        if (!$listing) {
+            ErrorController::notFound('Listing not found');
+            return;
+        }
+
+        // --- up to this point the same
+
+        $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'state', 'phone', 'email', 'requirements', 'benefits'];
+
+        $updateValues = [];
+
+        // ** same but using a loop insteas of array intersect
+        // loop through the allowed fields and  check the allowed fields, if set in POST data push onto the $updatedValues array
+        // foreach ($allowedFields as $field) {
+        //     if (isset($_POST[$field])) {
+        //         $updateValues[$field] = $_POST[$field];
+        //     }
+        // }
+
+
+        $updateValues = array_intersect_key($_POST, array_flip($allowedFields));
+
+
+        // inspectAndDie($updateValues);
+
+        // run the sanitize funciton on every input
+        $updateValues = array_map('sanitize', $updateValues);
+
+        // Validate required fields
+        $requiredFields = ['title', 'description', 'email', 'city', 'state'];
+
+        // loop and push onto errors and check if empty 
+        // Validation is the string method
+        $errors = [];
+        foreach ($requiredFields as $field) {
+            if (empty($updateValues[$field]) || !Validation::string($updateValues[$field])) {
+                $errors[$field] = ucfirst($field) . ' is required';
+            }
+        }
+
+        // inspectAndDie($errors);
+
+
+        // if there are errors then display the errors and exit
+        if (!empty($errors)) {
+            loadView('listings/edit', [
+                // we pass in $listing as what ever is in the datbase will be put back ther untouched as we have an error
+                'listing' => $listing,
+                'errors' => $errors,
+            ]);
+            exit;
+            // DYNAMICLY BUILDING THE QUERY!
+        } else {
+            // loop through to get the sql data structure right for dynamic insert
+            //  if no errors then UPDATE and submit to database
+            // inspectAndDie('success!');
+            // create update fields array 
+            $updateFields = [];
+            // loop through the keys of updateValues and add them to the update fields array
+            foreach (array_keys($updateValues) as $field) {
+                // inspect($field);
+                // set :placeholder in the query
+                $updateFields[] = "{$field} = :{$field}";
+            }
+            // WE NOW HAVE TO TURN THIS ARRAY INTO A STRING
+            // WE NOW HAVE TO TURN THIS ARRAY INTO A STRING
+            // inspectAndDie($updateFields);
+            $updateFields = implode(', ', $updateFields);
+            // inspectAndDie($updateFields);
+
+            // MAKE QUERY AS PLACE HOLDERS
+            $updateQuery = "UPDATE listings SET $updateFields WHERE id = :id";
+            inspectAndDie($updateQuery);
+
+
+            // Execute the update query
+            // SET THE ID AS WE NEED TO BIND THIS IN THE QUERY
+            // IN THE DATABASE CLASS
+            $updateValues['id'] = $id;
+
+            // inspectAndDie($updateValues);
+
+            // PASS IN QUERY AND VALUES THAT WILL BE BINDED IN THE QUERY
+            $this->db->query($updateQuery, $updateValues);
+
+            // FLASH MESSAGE 
+            $_SESSION['success_message'] = 'Listing updated successfully';
+
+            //  REDIRECT BACK TO THE EDITED LISTING 
+            redirect('/listings/' . $id);
+        }
     }
 }

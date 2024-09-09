@@ -12,21 +12,30 @@
 // 2:- set listing route below 
 // 1:- 
 
-
+// keep the gets together
 $router->get('/', 'HomeController@index');
 $router->get('/listings', 'ListingController@index');
 $router->get('/listings/create', 'ListingController@create');
+
+$router->get('/listings/edit/{id}', 'ListingController@edit');
 $router->get('/listings/{id}', 'ListingController@show');
 // because of classes we can specify a method 
 
-//  in listing controller create a POST
-$router->post('/listings', 'ListingController@store');
+
+
 
 // @ is broken up and show, create, destroy are used to call the methods
 
 
 // $router->debugRoutes();
 
+// NOTE: THE METHOD IS @... AND IT WILL BE IN FOLDER ListingController
+
+//  in listing controller create a POST
+$router->post('/listings', 'ListingController@store');
+// FORM SUBMITS TO /LISTINGS/ID href="/listings/<\?= $listing->id \?\>
+$router->put('/listings/{id}', 'ListingController@update');
 // click a buttom and calls a method in our controller called destroy
 // then go to the views/listings/show to make the form request a delete with a spoof 
+// keep {id} at the bottom so it does not think /edit is an id
 $router->delete('/listings/{id}', 'ListingController@destroy');
