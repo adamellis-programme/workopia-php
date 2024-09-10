@@ -101,8 +101,53 @@ class UserController
                 ]
             ]);
             exit;
-        } else {
-            inspectAndDie('success!');
         }
+        // no need for else as the exit will not let code run past if there is an error
+
+        // Check if account exists
+        $params = [
+            'email' => $email,
+        ];
+        // we use prepared statements as this is a user input
+
+        $user = $this->db->query('SELECT * FROM users WHERE email = :email', $params)->fetch();
+
+        if ($user) {
+            // if user then add to errors array
+            $errors['email'] = 'That email already exists';
+            loadView('users/create', [
+                'errors' => $errors,
+            ]);
+            exit;
+        }
+
+        // Create account
+        // using prepared statements with named paramaters
+        $params = [
+            'name' => $name,
+            'email' => $email,
+            'city' => $city,
+            'state' => $state,
+            // this uses bcrypt under the hood
+            // different options to pass in 
+            // PASSWORD_DEFAULT is bcrypt
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+        ];
+
+        $this->db->query('INSERT INTO users (name, email, city, state, password) VALUES (:name, :email, :city, :state, :password)', $params);
+
+        // Get the user id
+        $userId = $this->db->conn->lastInsertId();
+
+        // inspectAndDie([
+        //     'id' => $userId,
+        //     'name' => $name,
+        //     'email' => $email,
+        //     'city' => $city,
+        //     'state' => $state,
+        // ]);
+
+        redirect('/listings');
+        // inspectAndDie('success!');
     }
 }
