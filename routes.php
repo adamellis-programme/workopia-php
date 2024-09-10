@@ -52,6 +52,12 @@ $router->get('/auth/login', 'UserController@login');
 
 // auth
 //       submit the form
+/**
+ * --: the routter simply splists this string and
+ * --: callst the FILE and then calls the METHOD
+ * --: we do it this way as 
+ * --: we need to dynamicly pass ALL the ABOVE into ONE CLASS
+ * --:
+ */
 $router->post('/auth/register', 'UserController@store');
-
-
+$router->post('/auth/logout', 'UserController@logout');

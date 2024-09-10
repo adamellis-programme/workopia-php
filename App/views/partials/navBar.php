@@ -3,7 +3,7 @@
 use Framework\Session;
 
 // ass array so we add brackets
-inspect(Session::get('user')['name']);
+// inspect(Session::get('user')['name'] ?? '');
 // Framework\Session::has('user') // this can be used also
 
 ?>
@@ -23,7 +23,7 @@ inspect(Session::get('user')['name']);
                     <div>
                         Welcome <?= Session::get('user')['name'] ?>
                     </div>
-                    <form>
+                    <form method="POST" action="/auth/logout">
                         <button type="submit" class="text-white inline hover:underline">
                             Logout
                         </button>

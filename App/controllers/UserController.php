@@ -158,4 +158,31 @@ class UserController
         redirect('/');
         // inspectAndDie('success!');
     }
+
+
+    /**
+     * Logout the user
+     *
+     * @return void
+     */
+    public function logout()
+    {
+        // 
+        Session::clearAll(); // destroy the session 
+
+        /**
+         * session_get_cookie_params(); returns the path and domain the cookie belongs to
+         * we cant just call clear cookie we need to set it 
+         * PHPSESSID find by looking in the console cookies
+         * pass in '' for value and then set time earlier to NOW
+         * 
+         */
+
+        //  PARAMAS RETURNS AN ARRAY
+        $params = session_get_cookie_params();
+        // inspect($params);
+        setcookie('PHPSESSID', '', time() - 86400, $params['path'], $params['domain']);
+
+        redirect('/');
+    }
 }
