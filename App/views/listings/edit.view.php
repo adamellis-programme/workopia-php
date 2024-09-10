@@ -7,11 +7,16 @@
 <div class="flex justify-center items-center mt-20">
     <div class="bg-white p-8 rounded-lg shadow-md w-full md:w-600 mx-6">
         <h2 class="text-4xl text-center font-bold mb-4">Edit a Job</h2>
-        <?php if (isset($errors)) : ?>
-            <?php foreach ($errors as $error) : ?>
-                <div class="message bg-red-100 p-3 my-3"><?php echo $error; ?></div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+        <?= loadPartial('errors', [
+            // if the errors ar there then they wil show here 
+            // errors set in USER CONRROLLER CLASS!
+            'errors' => $errors ?? [],
+        ]) ?>
+        <!-- 
+            /listings/id lets the form 
+             submit back to itself 
+             this time with the errors
+              -->
         <form method="POST" action="/listings/<?= $listing->id ?>">
             <!-- SHOWS TO THE ROUTER AS A PUT REQUEST -->
             <input type="hidden" name="_method" value="PUT">

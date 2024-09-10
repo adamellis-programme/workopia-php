@@ -30,6 +30,7 @@ $router->get('/listings/{id}', 'ListingController@show');
 // $router->debugRoutes();
 
 // NOTE: THE METHOD IS @... AND IT WILL BE IN FOLDER ListingController
+// IF WE GO T TO /.../... IN THE URL IT RUNS THIS CONTROLLER
 
 //  in listing controller create a POST
 $router->post('/listings', 'ListingController@store');
@@ -39,3 +40,18 @@ $router->put('/listings/{id}', 'ListingController@update');
 // then go to the views/listings/show to make the form request a delete with a spoof 
 // keep {id} at the bottom so it does not think /edit is an id
 $router->delete('/listings/{id}', 'ListingController@destroy');
+
+
+// user controller 
+//      load the form
+$router->get('/auth/register', 'UserController@create');
+$router->get('/auth/login', 'UserController@login');
+
+// some people have a seperate session controller 
+// this is kept in one controller
+
+// auth
+//       submit the form
+$router->post('/auth/register', 'UserController@store');
+
+

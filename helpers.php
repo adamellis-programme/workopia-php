@@ -63,13 +63,14 @@ function loadView($name, $data = [])
 // the difference between using returr and require 
 // is if the return is called here then the require has
 // to be called on the page
-function loadPartial($name)
+function loadPartial($name, $data = [])
 {
     $partialPath = basePath("App/views/partials/{$name}.php");
 
     // Make sure path exists
     if (file_exists($partialPath)) {
         // returning the require statement here
+        extract($data); // this lets us pass the data in and recieve it in the view
         require $partialPath;
     } else {
         echo "Partial '{$name}' not found.";
