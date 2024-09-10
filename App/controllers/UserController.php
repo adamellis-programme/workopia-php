@@ -2,15 +2,12 @@
 
 namespace App\Controllers;
 
-use Framework\Database;
-use Framework\Validation;
 
-
-namespace App\Controllers;
 
 // auto loaders no require
 use Framework\Database;
 use Framework\Validation;
+use Framework\Session;
 
 class UserController
 {
@@ -136,7 +133,7 @@ class UserController
 
         $this->db->query('INSERT INTO users (name, email, city, state, password) VALUES (:name, :email, :city, :state, :password)', $params);
 
-        // Get the user id
+        // Get the user id - on the conn property
         $userId = $this->db->conn->lastInsertId();
 
         // inspectAndDie([
@@ -147,7 +144,18 @@ class UserController
         //     'state' => $state,
         // ]);
 
-        redirect('/listings');
+        // user is key - can be just id or anything we want
+        // name and email instead of making a req each time 
+        Session::set('user', [
+            'id' => $userId,
+            'name' => $name,
+            'email' => $email,
+            'city' => $city,
+            'state' => $state,
+        ]);
+        // 
+        // inspectAndDie(Session::get('user'));
+        redirect('/');
         // inspectAndDie('success!');
     }
 }

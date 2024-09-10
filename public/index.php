@@ -1,11 +1,15 @@
 
 <?php
-session_start();
 require __DIR__ . '/../vendor/autoload.php';
-require '../helpers.php';
+
+// AUTO LOADER AUTO LOADS FILES!
 
 use Framework\Router;
+use Framework\Session; // auto loading Session file included
 
+Session::start();
+
+require '../helpers.php';
 
 // inspect(__DIR__);
 // require basePath('Framework/Database.php');
