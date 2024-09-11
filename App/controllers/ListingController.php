@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use Framework\Database;
 use Framework\Validation;
+use Framework\Session;
+use Framework\Authorization;
 
 // we do not have to reqire this Class anywhere as it is 
 // being autoloaded into any file that needs it 
@@ -26,7 +28,7 @@ class ListingController
     {
         // scope resalution operator
         // inspectAndDie(Validation::match('hello',  'hello'));
-        $listings = $this->db->query('SELECT * FROM listings')->fetchAll();
+        $listings = $this->db->query('SELECT * FROM listings ORDER BY created_at DESC')->fetchAll();
 
         loadView('listings/index', [
             'listings' => $listings
@@ -87,7 +89,9 @@ class ListingController
          * array_flip as no keys in allow we need to use flip
          */
         $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
-        $newListingData['user_id'] = 1;
+
+
+        $newListingData['user_id'] = Session::get('user')['id'];
 
         // Sanitize the data - 
         // 1st call functin to run callback on 
@@ -182,6 +186,18 @@ class ListingController
             return;
         }
 
+
+        // Authorization
+        // if (Session::get('user')['id'] != $listing->user_id) {
+        //     $_SESSION['error_message'] = 'You are not authoirzed to delete this listing';
+        //     return redirect("/listings/{$id}");
+        // }
+
+        // Authorization -- show error message and re-direct
+        if (!Authorization::isOwner($listing->user_id)) {
+            $_SESSION['error_message'] = 'You are not authoirzed to delete this listing';
+            return redirect("/listings/{$id}");
+        }
         // inspectAndDie($listing);
 
         $this->db->query('DELETE FROM listings WHERE id = :id', $params);
