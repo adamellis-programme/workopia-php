@@ -1,3 +1,9 @@
+-: middleware is code that sits between a web app and the server
+-: middleware acts as a bridge to processs and manipulate requests and responses
+-: this middleware will loook at the incomming req route and look at the roles that are sent with that and determine how to route that request
+-: everything in frame work is a core part of the application
+
+
 Yes, with your PSR-4 autoloading configuration set up in composer.json like this:
 
 json

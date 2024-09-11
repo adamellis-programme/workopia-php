@@ -1,8 +1,4 @@
 <?php
-// Set the method on the class and call inspectAndDie / echo ‘submitted’
-// Set the method on the class and call inspectAndDie / echo ‘submitted’
-// Set the method on the class and call inspectAndDie / echo ‘submitted’
-// Set the method on the class and call inspectAndDie / echo ‘submitted’
 
 // return [
 //     '/' => 'controllers/home.php',
@@ -12,58 +8,20 @@
 // ];
 
 
-// 1:- set up listing class
-// 2:- set listing route below 
-// 1:- 
-
-// keep the gets together
 $router->get('/', 'HomeController@index');
 $router->get('/listings', 'ListingController@index');
-$router->get('/listings/create', 'ListingController@create');
 
-$router->get('/listings/edit/{id}', 'ListingController@edit');
+$router->get('/listings/create', 'ListingController@create', ['auth']);
+$router->get('/listings/edit/{id}', 'ListingController@edit', ['auth']);
 $router->get('/listings/{id}', 'ListingController@show');
-// method is called authenticate after the @ - now add the authenticate method to the controller
-$router->post('/auth/login', 'UserController@authenticate');
-// because of classes we can specify a method 
 
+$router->post('/listings', 'ListingController@store', ['auth']);
+$router->put('/listings/{id}', 'ListingController@update', ['auth']);
+$router->delete('/listings/{id}', 'ListingController@destroy', ['auth']);
 
+$router->get('/auth/register', 'UserController@create', ['guest']);
+$router->get('/auth/login', 'UserController@login', ['guest']);
 
-
-// @ is broken up and show, create, destroy are used to call the methods
-
-
-// $router->debugRoutes();
-
-// NOTE: THE METHOD IS @... AND IT WILL BE IN FOLDER ListingController
-// IF WE GO T TO /.../... IN THE URL IT RUNS THIS CONTROLLER
-
-//  in listing controller create a POST
-$router->post('/listings', 'ListingController@store');
-// FORM SUBMITS TO /LISTINGS/ID href="/listings/<\?= $listing->id \?\>
-$router->put('/listings/{id}', 'ListingController@update');
-// click a buttom and calls a method in our controller called destroy
-// then go to the views/listings/show to make the form request a delete with a spoof 
-// keep {id} at the bottom so it does not think /edit is an id
-$router->delete('/listings/{id}', 'ListingController@destroy');
-
-
-// user controller 
-//      load the form
-$router->get('/auth/register', 'UserController@create');
-$router->get('/auth/login', 'UserController@login');
-
-// some people have a seperate session controller 
-// this is kept in one controller
-
-// auth
-//       submit the form
-/**
- * --: the routter simply splists this string and
- * --: callst the FILE and then calls the METHOD
- * --: we do it this way as 
- * --: we need to dynamicly pass ALL the ABOVE into ONE CLASS
- * --:
- */
-$router->post('/auth/register', 'UserController@store');
-$router->post('/auth/logout', 'UserController@logout');
+$router->post('/auth/register', 'UserController@store', ['guest']);
+$router->post('/auth/logout', 'UserController@logout', ['auth']);
+$router->post('/auth/login', 'UserController@authenticate', ['guest']);

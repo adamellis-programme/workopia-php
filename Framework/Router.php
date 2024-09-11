@@ -4,6 +4,7 @@
 namespace Framework;
 
 use App\Controllers\ErrorController;
+use Framework\Middleware\Authorize;
 
 // $routes = require basePath('routes.php');
 // // the keys are the uri
@@ -31,22 +32,28 @@ class Router
     /**
      * Add a new Route
      * this is a method 
+     *  HERE SO WE DO NOT HAVE TO 
+     * DO THIS  $this->routes[] = [
+     * IN EVERY METHOD
      * @param String  $method
      * @param String  $uri
      * @param String  $action
      * @return void
      */
-    public function registerRoute($method, $uri, $action)
+
+    public function registerRoute($method, $uri, $action, $middleware = [])
     {
         // assos arr method
         // NOTE THE BRACKETS [] = ADDING TO THE ARRAY AND NOT SETTING THE ARRAY 
         list($controller, $controllerMethod) = explode('@', $action);
         // inspectAndDie($controllerMethod);
+        //  this routes array is used in routes method to loop
         $this->routes[] = [
             'method' => $method,
             'uri' => $uri,
             'controller' => $controller,
             'controllerMethod' => $controllerMethod,
+            'middleware' => $middleware,
         ];
     }
 
@@ -77,10 +84,10 @@ class Router
      * each time this is called we ADD (PUSH ON) a route to the routes array!
      * 
      */
-    public function get($uri, $controller)
+    public function get($uri, $controller, $middleware = [])
     {
         // inspect($uri);
-        $this->registerRoute('GET', $uri, $controller);
+        $this->registerRoute('GET', $uri, $controller, $middleware);
     }
 
     /**
@@ -90,10 +97,10 @@ class Router
      * @param string $controller
      * @return void
      */
-    public function post($uri, $controller)
+    public function post($uri, $controller, $middleware = [])
     {
 
-        $this->registerRoute('POST', $uri, $controller);
+        $this->registerRoute('POST', $uri, $controller, $middleware);
     }
 
     /**
@@ -103,9 +110,9 @@ class Router
      * @param string $controller
      * @return void
      */
-    public function put($uri, $controller)
+    public function put($uri, $controller, $middleware = [])
     {
-        $this->registerRoute('PUT', $uri, $controller);
+        $this->registerRoute('PUT', $uri, $controller, $middleware);
     }
 
     /**
@@ -115,9 +122,9 @@ class Router
      * @param string $controller
      * @return void
      */
-    public function delete($uri, $controller)
+    public function delete($uri, $controller, $middleware = [])
     {
-        $this->registerRoute('DELETE', $uri, $controller);
+        $this->registerRoute('DELETE', $uri, $controller, $middleware);
     }
 
 
@@ -208,7 +215,21 @@ class Router
                  * 
                  */
 
+                //  AUTH just means ARE WE LOGGED IN 
+                //  DO WE HAVE A TRUSTED USER in the session
+
                 if ($match) {
+                    // we loop through the middleware array as we might have more than one
+                    // we might have ['auth, admin, ceo']
+
+                    foreach ($route['middleware'] as $middlewareRole) {
+                        // instantiate a new Auth instance 
+                        // we use perenthasese as we do not use a variable and then we directly call -> handle()
+                        // handle takes in a $role which will be in the middlewareRole
+
+                        (new Authorize())->handle($middlewareRole);
+                    }
+
                     // Extract controller and method from route
                     // inspect($route);
                     // controller gets the file name whic h has the correct controller class in it 
