@@ -1,4 +1,8 @@
 <?php
+// Set the method on the class and call inspectAndDie / echo ‘submitted’
+// Set the method on the class and call inspectAndDie / echo ‘submitted’
+// Set the method on the class and call inspectAndDie / echo ‘submitted’
+// Set the method on the class and call inspectAndDie / echo ‘submitted’
 
 // return [
 //     '/' => 'controllers/home.php',
@@ -19,6 +23,8 @@ $router->get('/listings/create', 'ListingController@create');
 
 $router->get('/listings/edit/{id}', 'ListingController@edit');
 $router->get('/listings/{id}', 'ListingController@show');
+// method is called authenticate after the @ - now add the authenticate method to the controller
+$router->post('/auth/login', 'UserController@authenticate');
 // because of classes we can specify a method 
 
 

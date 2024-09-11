@@ -166,6 +166,7 @@ class UserController
      * @return void
      */
     public function logout()
+    // session_destroy()
     {
         // 
         Session::clearAll(); // destroy the session 
@@ -184,5 +185,87 @@ class UserController
         setcookie('PHPSESSID', '', time() - 86400, $params['path'], $params['domain']);
 
         redirect('/');
+    }
+
+    /**
+     * Authenticate the user
+     *
+     * @return void
+     */
+    // Set the method on the class and call inspectAndDie / echo ‘submitted’
+    public function authenticate()
+    {
+        // get the data from the POST form and set to variables 
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $errors = [];
+
+        // Validate email
+        if (!Validation::email($email)) {
+            $errors['email'] = 'Please enter a valid email address';
+        }
+
+        // Validate password length
+        if (!Validation::string($password, 6, 50)) {
+            $errors['password'] = 'Password must be at least 6 characters long';
+        }
+
+        // if there are errors we display the same view again
+        if (!empty($errors)) {
+            loadView('users/login', [
+                'errors' => $errors,
+            ]);
+            exit;
+        }
+
+        // -: here we have to do two checks 
+        // -: one to see if the email exists 
+        // -: and one to see if the pass words match 
+
+
+        // Check if account exists
+        // ANYTHING IN PARAMS IS A BOUND PARAMATER
+        $params = [
+            'email' => $email,
+        ];
+        /**
+         * ANYTHING THAT IS A USER INPUT IS A :NAMED PARAM
+         * ALL USER INPUTS GO IN THE $PARAMS ARRAY
+         * AND THEN $PARAMS GETS PASSED IN AFTER THE QUERY
+         * 
+         */
+        // PLACEHOLDER PARAM
+        $user = $this->db->query('SELECT * FROM users WHERE email = :email', $params)->fetch();
+
+        // if there is not user found:
+        // load the same view with relevent errors
+        if (!$user) {
+            $errors['email'] = 'Incorrect credentials';
+            loadView('users/login', [
+                'errors' => $errors,
+            ]);
+            exit;
+        }
+
+        // Check if password is correct
+        // we get $user-> from MATHCED USER
+        if (!password_verify($password, $user->password)) {
+            $errors['email'] = 'Incorrect credentials';
+            loadView('users/login', [
+                'errors' => $errors,
+            ]);
+            exit;
+        }
+        // IF WE GET PASSED THIS POINT EVERYTHING MATCHES 
+        // Set user session
+        Session::set('user', [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'city' => $user->city,
+            'state' => $user->state
+        ]);
+
+        redirect('/listings');
     }
 }
