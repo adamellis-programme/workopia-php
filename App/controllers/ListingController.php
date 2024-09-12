@@ -150,7 +150,8 @@ class ListingController
             $query = "INSERT INTO listings ({$fields}) VALUES ({$values})";
 
             $this->db->query($query, $newListingData);
-            inspect($values);
+            // inspect($values);
+            Session::setFlashMessage('success_message', 'Listing created successfully');
             redirect('/listings');
         }
     }
@@ -169,6 +170,7 @@ class ListingController
         // params array as we are binding when passed to
         // Database Query
 
+        // inspectAndDie('hello');
         $id = $params['id'];
         // inspect($id);
         $params = [
@@ -177,7 +179,6 @@ class ListingController
 
         // gets the single listing from the database
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
-        // inspect($listing);
 
         // Check if listing exists
         // if no lising then throw an error
@@ -195,7 +196,8 @@ class ListingController
 
         // Authorization -- show error message and re-direct
         if (!Authorization::isOwner($listing->user_id)) {
-            $_SESSION['error_message'] = 'You are not authoirzed to delete this listing';
+            // $_SESSION['error_message'] = 'You are not authoirzed to delete this listing';
+            Session::setFlashMessage('error_message', 'You are not authoirzed to delete this listing');
             return redirect("/listings/{$id}");
         }
         // inspectAndDie($listing);
@@ -203,7 +205,9 @@ class ListingController
         $this->db->query('DELETE FROM listings WHERE id = :id', $params);
 
         // Set flash message 
-        $_SESSION['success_message'] = 'Listing deleted successfully';
+        // $_SESSION['success_message'] = 'Listing deleted successfully';
+        Session::setFlashMessage('success_message', 'Listing deleted successfully');
+
 
         redirect('/listings');
     }
@@ -217,6 +221,8 @@ class ListingController
    */
     public function edit($params)
     {
+
+
         $id = $params['id'];
 
         $params = [
@@ -226,11 +232,20 @@ class ListingController
         // fetch single listing 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
+        // **** THIS STOPS THE EDIT VIEW FROM BEING SHOWN *** //
+        // Authorization - TO STOP THE FORM FROM BEING SHOWN
+        if (!Authorization::isOwner($listing->user_id)) {
+            Session::setFlashMessage('error_message', 'You are not authoirzed to update this listing');
+            return redirect('/listings/' . $listing->id);
+        }
+
         // Check if listing exists
         if (!$listing) {
             ErrorController::notFound('Listing not found');
             return;
         }
+
+
 
         // use inspect to see data in screen
         // inspectAndDie($listing);
@@ -272,6 +287,12 @@ class ListingController
         }
 
         // --- up to this point the same
+
+        // Authorization
+        if (!Authorization::isOwner($listing->user_id)) {
+            Session::setFlashMessage('error_message', 'You are not authoirzed to update this listing');
+            return redirect('/listings/' . $listing->id);
+        }
 
         $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'state', 'phone', 'email', 'requirements', 'benefits'];
 
@@ -338,7 +359,7 @@ class ListingController
 
             // MAKE QUERY AS PLACE HOLDERS
             $updateQuery = "UPDATE listings SET $updateFields WHERE id = :id";
-            inspectAndDie($updateQuery);
+            // inspectAndDie($updateQuery);
 
 
             // Execute the update query
@@ -351,11 +372,49 @@ class ListingController
             // PASS IN QUERY AND VALUES THAT WILL BE BINDED IN THE QUERY
             $this->db->query($updateQuery, $updateValues);
 
-            // FLASH MESSAGE 
-            $_SESSION['success_message'] = 'Listing updated successfully';
+            // flash message
+            Session::setFlashMessage('success_message', 'Listing updated successfully');
 
             //  REDIRECT BACK TO THE EDITED LISTING 
             redirect('/listings/' . $id);
         }
+    }
+
+
+    /*
+   * Search listings
+   * use the GET super global to inspect the url query params
+   * @return void
+   */
+    public function search()
+    {
+        // inspectAndDie($_GET);
+
+        // Get the keywords and location from the search form
+        $keywords = isset($_GET['keywords']) ? trim($_GET['keywords']) : '';
+        $location = isset($_GET['location']) ? trim($_GET['location']) : '';
+
+        // matches the keywords to keywords and location to location
+        $query = "SELECT * FROM listings WHERE (title LIKE :keywords OR description LIKE :keywords OR tags LIKE :keywords OR company LIKE :keywords) AND (city LIKE :location OR state LIKE :location)";
+        /**
+         * % means 0 or more chars before / after 
+         * as long as % is there we get it anywhere in the string 
+         */
+        $params = [
+            'keywords' => "%{$keywords}%",
+            'location' => "%{$location}%",
+        ];
+
+        $listings = $this->db->query($query, $params)->fetchAll();
+
+        // inspectAndDie($listings);
+
+        // WE SANITIZE WITH HTML SPECIAL CHARS IN THE VIEW
+        // AS THIS IS A USER INPUT
+        loadView('/listings/index', [
+            'listings' => $listings,
+            'keywords' => $keywords,
+            'location' => $location,
+        ]);
     }
 }
